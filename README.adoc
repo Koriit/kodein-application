@@ -1,0 +1,83 @@
+= Kodein Application
+
+Extension functions that ease making applications with Kodein container as a core.
+
+== Example
+[source,kotlin]
+----
+const val MODULE_HTTP_API = "httpApi"
+
+val httpApi = Kodein.Module(MODULE_HTTP_API) {
+    bind<SomeHttpServer>(tag = MODULE_HTTP_API) with singleton {
+        SomeHttpServer(serverConfig())
+    }
+
+    on(Start) {
+        val server: SomeHttpServer = direct.instance(tag = MODULE_HTTP_API)
+
+        server.start()
+    }
+
+    on(Stop) {
+        val server: SomeHttpServer = direct.instance(tag = MODULE_HTTP_API)
+
+        server.stop()
+    }
+}
+
+val MyApplication = kodeinApplication {
+    import(httpApi, allowOverride = true)
+}
+
+fun main() {
+    MyApplication.run()
+
+    // Remember to gracefully finish logging threads and flush buffers
+    // Depends on your logging provider
+    closeLoggers()
+}
+----
+
+== Testing
+[source,kotlin]
+----
+const val MODULE_TEST = "test"
+
+val testConfiguration = Kodein.Module(MODULE_TEST) {
+    bind<SomeHttpServer>(tag = MODULE_HTTP_API, overrides = true) with singleton {
+        TestHttpServer(serverConfig())
+    }
+}
+
+@Suppress("TestFunctionName")
+fun TestApplication(extraConfig: Kodein.MainBuilder.() -> Unit = {}) = Kodein {
+    extend(MyApplication, copy = Copy.All)
+    import(testConfiguration, allowOverride = true)
+
+    extraConfig()
+}
+
+internal class DeployControllerTest : KodeinAware {
+
+    override val kodein = TestApplication() {
+        // you can further configure it here with your test specific bindings and overrides
+    }
+
+    private val server: SomeHttpServer by instance(tag = MODULE_HTTP_API)
+
+    @BeforeAll
+    fun start() {
+        server.start()
+    }
+
+    @AfterAll
+    fun stop() {
+        server.stop()
+    }
+
+    @Test
+    fun someTest() = with(server) {
+        // some test
+    }
+}
+----

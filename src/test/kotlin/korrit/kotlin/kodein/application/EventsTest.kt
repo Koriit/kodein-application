@@ -1,0 +1,30 @@
+package korrit.kotlin.kodein.application
+
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
+import org.kodein.di.Kodein
+
+internal class EventsTest {
+
+    @Test
+    fun `verify dispatcher works`() {
+        val event = "type"
+        var counter = 0
+
+        val kodein = Kodein {
+            registerEvents(event)
+
+            on(event) {
+                counter++
+            }
+        }
+        
+        kodein.dispatchEvent(event)
+        
+        assertEquals(1, counter)
+
+        kodein.dispatchEvent(event)
+
+        assertEquals(2, counter)
+    }
+}
