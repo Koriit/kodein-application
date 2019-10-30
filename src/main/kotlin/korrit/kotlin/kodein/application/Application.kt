@@ -13,8 +13,6 @@ import java.util.concurrent.CyclicBarrier
  * Extension functions that ease making applications with Kodein container as a core.
  */
 
-private val LOG = LoggerFactory.getLogger("koriit.kotlin.kodein.application.ApplicationKt")
-
 enum class ApplicationEvents {
     /**
      * Startup when everything is configured.
@@ -54,19 +52,15 @@ fun kodeinApplication(allowSilentOverride: Boolean = false, init: Kodein.MainBui
  * Main application function. Registers shutdown hooks, dispatches application events and blocks until shutdown.
  */
 fun Kodein.run() {
+    val LOG = LoggerFactory.getLogger("koriit.kotlin.kodein.application.ApplicationKt")
     try {
         LOG.info("Application configured, starting...")
-
-        // Sometimes JVM might not wait for `main` to finish when receiving interrupt
-        val main = Thread.currentThread()
-        Runtime.getRuntime().addShutdownHook(Thread {
-            main.join()
-        })
 
         // Execute startup callbacks like starting server connectors, creating workers, etc.
         dispatchEvent(Start)
 
         val finish = CyclicBarrier(2)
+        val main = Thread.currentThread()
         Runtime.getRuntime().addShutdownHook(Thread {
             try {
                 // Trigger cleanup callbacks like stopping server, etc.
@@ -77,6 +71,8 @@ fun Kodein.run() {
 
             } finally {
                 finish.await()
+                // Sometimes JVM might not wait for `main` to finish when receiving interrupt
+                main.join()
             }
         })
 
