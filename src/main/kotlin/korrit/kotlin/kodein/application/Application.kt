@@ -36,6 +36,8 @@ fun kodeinApplication(allowSilentOverride: Boolean = false, init: Kodein.MainBui
     return Kodein(allowSilentOverride) {
         registerEvents(*ApplicationEvents.values())
 
+        init()
+
         on(Stop) {
             // FIXME: this creates lazy AutoCloseable instances which were not created yet
             // Cleanup AutoCloseable instances
@@ -43,8 +45,6 @@ fun kodeinApplication(allowSilentOverride: Boolean = false, init: Kodein.MainBui
                 it.close()
             }
         }
-
-        init()
     }
 }
 
