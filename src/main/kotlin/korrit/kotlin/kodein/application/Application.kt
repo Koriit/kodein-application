@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory
 import java.lang.management.ManagementFactory
 import java.util.concurrent.CyclicBarrier
 
+private val LOG = LoggerFactory.getLogger("koriit.kotlin.kodein.application.ApplicationKt")
+
 /**
  * Extension functions that ease making applications with Kodein container as a core.
  */
@@ -42,6 +44,7 @@ fun kodeinApplication(allowSilentOverride: Boolean = false, init: Kodein.MainBui
             // FIXME: this creates lazy AutoCloseable instances which were not created yet
             // Cleanup AutoCloseable instances
             direct.allInstances<AutoCloseable>().forEach {
+                LOG.info("Closing ${it.javaClass.simpleName}...")
                 it.close()
             }
         }
@@ -52,7 +55,6 @@ fun kodeinApplication(allowSilentOverride: Boolean = false, init: Kodein.MainBui
  * Main application function. Registers shutdown hooks, dispatches application events and blocks until shutdown.
  */
 fun Kodein.run() {
-    val LOG = LoggerFactory.getLogger("koriit.kotlin.kodein.application.ApplicationKt")
     try {
         LOG.info("Application configured, starting...")
 
