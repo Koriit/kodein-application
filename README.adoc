@@ -1,5 +1,12 @@
 = Kodein Application
 
+image:https://www.travis-ci.org/Koriit/kodein-application.svg?branch=master["Build Status", link="https://www.travis-ci.org/Koriit/kodein-application"]
+image:https://www.codefactor.io/repository/github/koriit/kodein-application/badge[CodeFactor,link=https://www.codefactor.io/repository/github/koriit/kodein-application]
+image:https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg[ktlint,link=https://ktlint.github.io/]
+
+image:https://api.bintray.com/packages/koriit/kotlin/kodein-application/images/download.svg[Download, link=https://bintray.com/koriit/kotlin/kodein-application/_latestVersion]
+image:https://img.shields.io/github/license/koriit/kodein-application[GitHub]
+
 Extension functions that ease making applications with Kodein container as a core.
 
 == Example

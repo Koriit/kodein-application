@@ -1,6 +1,6 @@
 package korrit.kotlin.kodein.application
 
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.kodein.di.Kodein
 
@@ -18,9 +18,9 @@ internal class EventsTest {
                 counter++
             }
         }
-        
+
         kodein.dispatchEvent(event)
-        
+
         assertEquals(1, counter)
 
         kodein.dispatchEvent(event)
