@@ -10,7 +10,7 @@ import org.kodein.di.direct
 import org.kodein.di.generic.allInstances
 import org.slf4j.LoggerFactory
 
-private val log = LoggerFactory.getLogger("koriit.kotlin.kodein.application.ApplicationKt")
+private val log = LoggerFactory.getLogger("koriit.kotlin.kodein.application.KodeinApplicationKt")
 
 /**
  * Extension functions that ease making applications with Kodein container as a core.
