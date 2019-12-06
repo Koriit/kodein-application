@@ -9,7 +9,9 @@ import org.kodein.di.generic.singleton
 
 internal class ApplicationTest {
 
+    /** Class fixture. */
     class SomeAutoCloseable : AutoCloseable {
+        /** State fixture. */
         var closed = false
 
         override fun close() {
