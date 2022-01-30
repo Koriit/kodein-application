@@ -2,7 +2,7 @@ package com.korrit.kotlin.kodein.application
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.kodein.di.Kodein
+import org.kodein.di.DI
 
 internal class EventsTest {
 
@@ -11,7 +11,7 @@ internal class EventsTest {
         val event = "type"
         var counter = 0
 
-        val kodein = Kodein {
+        val kodein = DI {
             registerEvents(event)
 
             on(event) {

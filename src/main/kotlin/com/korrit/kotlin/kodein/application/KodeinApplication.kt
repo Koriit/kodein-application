@@ -3,9 +3,9 @@ package com.korrit.kotlin.kodein.application
 
 import com.korrit.kotlin.kodein.application.ApplicationEvents.Start
 import com.korrit.kotlin.kodein.application.ApplicationEvents.Stop
-import org.kodein.di.Kodein
+import org.kodein.di.DI
+import org.kodein.di.allInstances
 import org.kodein.di.direct
-import org.kodein.di.generic.allInstances
 import org.slf4j.LoggerFactory
 import java.lang.management.ManagementFactory
 import java.util.concurrent.CyclicBarrier
@@ -13,7 +13,7 @@ import java.util.concurrent.CyclicBarrier
 private val log = LoggerFactory.getLogger("koriit.kotlin.kodein.application.KodeinApplicationKt")
 
 /**
- * Extension functions that ease making applications with Kodein container as a core.
+ * Extension functions that ease making applications with DI container as a core.
  */
 enum class ApplicationEvents {
     /**
@@ -30,12 +30,12 @@ enum class ApplicationEvents {
 }
 
 /**
- * Helper function that wraps normal Kodein builder and registers some helpers.
+ * Helper function that wraps normal DI builder and registers some helpers.
  *
  * Registers a stop callback that closes AutoCloseable instances.
  */
-fun kodeinApplication(allowSilentOverride: Boolean = false, init: Kodein.MainBuilder.() -> Unit): Kodein {
-    return Kodein(allowSilentOverride) {
+fun kodeinApplication(allowSilentOverride: Boolean = false, init: DI.MainBuilder.() -> Unit): DI {
+    return DI(allowSilentOverride) {
         registerEvents(Start, Stop)
 
         init()
@@ -54,7 +54,7 @@ fun kodeinApplication(allowSilentOverride: Boolean = false, init: Kodein.MainBui
 /**
  * Main application function. Registers shutdown hooks, dispatches application events and blocks until shutdown.
  */
-fun Kodein.run() {
+fun DI.run() {
     @Suppress("TooGenericExceptionCaught") // intended
     try {
         log.info("Application configured, starting...")

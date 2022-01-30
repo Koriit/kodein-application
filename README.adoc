@@ -11,12 +11,20 @@ WARNING: From version 0.5.0 all package names have been renamed to match new art
 
 Extension functions that ease making applications with Kodein container as a core.
 
+== Kodein DI support
+|===
+| Kodein DI version | Kodein Application version
+
+| 7 | >= 0.6
+| 6 | \<= 0.5
+|===
+
 == Example
 [source,kotlin]
 ----
 const val MODULE_HTTP_API = "httpApi"
 
-val httpApi = Kodein.Module(MODULE_HTTP_API) {
+val httpApi = DI.Module(MODULE_HTTP_API) {
     bind<SomeHttpServer>(tag = MODULE_HTTP_API) with singleton {
         SomeHttpServer(serverConfig())
     }
@@ -52,21 +60,21 @@ fun main() {
 ----
 const val MODULE_TEST = "test"
 
-val testConfiguration = Kodein.Module(MODULE_TEST) {
+val testConfiguration = DI.Module(MODULE_TEST) {
     bind<SomeHttpServer>(tag = MODULE_HTTP_API, overrides = true) with singleton {
         TestHttpServer(serverConfig())
     }
 }
 
 @Suppress("TestFunctionName")
-fun TestApplication(extraConfig: Kodein.MainBuilder.() -> Unit = {}) = Kodein {
+fun TestApplication(extraConfig: DI.MainBuilder.() -> Unit = {}) = Kodein {
     extend(MyApplication, copy = Copy.All)
     import(testConfiguration, allowOverride = true)
 
     extraConfig()
 }
 
-internal class DeployControllerTest : KodeinAware {
+internal class DeployControllerTest : DIAware {
 
     override val kodein = TestApplication() {
         // you can further configure it here with your test specific bindings and overrides

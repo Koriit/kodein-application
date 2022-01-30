@@ -22,7 +22,7 @@ repositories {
 }
 
 ext {
-    kodeinVersion = "6.5.5"
+    kodeinVersion = "7.10.0"
     slf4jVersion = "1.7.35"
 }
 
@@ -31,7 +31,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
     // KODEIN
-    implementation "org.kodein.di:kodein-di-generic-jvm:$kodeinVersion"
+    implementation "org.kodein.di:kodein-di:$kodeinVersion"
 
     // LOGGING
     implementation "org.slf4j:slf4j-api:$slf4jVersion"

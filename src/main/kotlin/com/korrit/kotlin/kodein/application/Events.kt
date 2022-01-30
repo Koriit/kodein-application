@@ -1,42 +1,41 @@
 package com.korrit.kotlin.kodein.application
 
-import org.kodein.di.Kodein
+import org.kodein.di.DI
+import org.kodein.di.bindSet
 import org.kodein.di.direct
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.inSet
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.setBinding
+import org.kodein.di.inSet
+import org.kodein.di.instance
 
 /**
- * Extension functions that abstract Kodein as a simple event dispatcher.
+ * Extension functions that abstract DI as a simple event dispatcher.
  *
  * First, you register your event types. They are internally used as binding tags.
  * Second, you register event callbacks.
- * Third, once your Kodein instance is created you can dispatch your events triggering registered callbacks.
+ * Third, once your DI instance is created you can dispatch your events triggering registered callbacks.
  *
  * Please, note that you cannot pass any additional arguments to your callbacks with this simplified implementation.
  */
 
-typealias KodeinEventCallback = Kodein.() -> Unit
+typealias KodeinEventCallback = DI.() -> Unit
 typealias KodeinEventCallbacks = Set<KodeinEventCallback>
 
 /**
- * Registers event types in Kodein and creates set binding for callbacks.
+ * Registers event types in DI and creates set binding for callbacks.
  *
  * There is no specific requirements for events. You are only required to use
  * the same OBJECT INSTANCE when registering callbacks and dispatching.
  */
-fun Kodein.Builder.registerEvents(vararg events: Any) {
+fun DI.Builder.registerEvents(vararg events: Any) {
     events.forEach {
-        bind(tag = it) from setBinding<KodeinEventCallback>()
+        bindSet<KodeinEventCallback>(tag = it)
     }
 }
 
 /**
  * Registers new callback for given event.
  */
-fun Kodein.Builder.on(event: Any, callback: KodeinEventCallback) {
-    bind<KodeinEventCallback>(tag = event).inSet() with instance(callback)
+fun DI.Builder.on(event: Any, callback: KodeinEventCallback) {
+    inSet<KodeinEventCallback>(tag = event) { instance(callback) }
 }
 
 /**
@@ -45,7 +44,7 @@ fun Kodein.Builder.on(event: Any, callback: KodeinEventCallback) {
  * You can dispatch multiple times.
  * Callbacks are executed sequentially.
  */
-fun Kodein.dispatchEvent(event: Any) {
+fun DI.dispatchEvent(event: Any) {
     direct.instance<KodeinEventCallbacks>(tag = event).forEach {
         it()
     }
