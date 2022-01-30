@@ -4,9 +4,9 @@
 
 plugins {
     id "org.jetbrains.kotlin.jvm" version "1.3.72"
-    id "com.jfrog.bintray" version "1.8.5"
     id "java-library"
     id "maven-publish"
+    id "signing"
     id "jacoco"
     id "org.jlleitschuh.gradle.ktlint" version "9.2.1"
     id "io.gitlab.arturbosch.detekt" version "1.7.4"
@@ -18,7 +18,7 @@ plugins {
 //////////////////
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 ext {
@@ -111,26 +111,19 @@ if (!project.hasProperty("fast")) test.finalizedBy(jacocoTestReport)
 /////////////
 // PUBLISH //
 /////////////
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allSource
-    archiveClassifier = "sources"
-}
-
-task javadocJar(type: Jar) {
-    from javadoc
-    archiveClassifier = "javadoc"
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 publishing {
     publications {
-        bintrayMaven(MavenPublication) {
+        mavenJava(MavenPublication) {
             groupId = project.group
             artifactId = projectName
             version = project.version
             from components.java
-            artifact sourcesJar
-            artifact javadocJar
+
             pom {
                 name = "Kodein Application"
                 description = "Set of functions to create applications based on Kodein container"
@@ -141,25 +134,43 @@ publishing {
                         url = "https://github.com/Koriit/kodein-application/blob/master/LICENSE"
                     }
                 }
+                developers {
+                    developer {
+                        id = 'koriit'
+                        name = 'Aleksander Stelmaczonek'
+                        email = 'al.stelmaczonek@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/Koriit/kodein-application.git'
+                    developerConnection = 'scm:git:ssh://github.com/Koriit/kodein-application.git'
+                    url = 'https://github.com/Koriit/kodein-application'
             }
         }
     }
 }
 
-bintray {
-    user = System.getProperty("bintray.user")
-    key = System.getProperty("bintray.key")
-    publications = ["bintrayMaven"]
+    repositories {
+        maven {
+            credentials {
+                username = findProperty("sonatype.user") ?: System.getenv("SONATYPE_USERNAME")
+                password = findProperty("sonatype.password")?: System.getenv("SONATYPE_PASSWORD")
+            }
 
-    pkg {
-        repo = "kotlin"
-        name = "kodein-application"
-        version {
-            name = project.version
-            released = new Date()
+            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
     }
 }
+
+signing {
+    def signingKey = findProperty("signing.key") ?: System.getenv("PGP_SIGNING_KEY")
+    def signingPassword = findProperty("signing.password") ?: System.getenv("PGP_SIGNING_PASSWORD")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign publishing.publications.mavenJava
+}
+
 
 ///////////
 // OTHER //
