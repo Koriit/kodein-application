@@ -3,14 +3,14 @@
 /////////////
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.3.72"
+    id "org.jetbrains.kotlin.jvm" version "1.6.10"
     id "java-library"
     id "maven-publish"
     id "signing"
     id "jacoco"
-    id "org.jlleitschuh.gradle.ktlint" version "9.2.1"
-    id "io.gitlab.arturbosch.detekt" version "1.7.4"
-    id "com.github.ben-manes.versions" version "0.28.0"
+    id "org.jlleitschuh.gradle.ktlint" version "10.2.1"
+    id "io.gitlab.arturbosch.detekt" version "1.19.0"
+    id "com.github.ben-manes.versions" version "0.41.0"
 }
 
 //////////////////
@@ -23,7 +23,7 @@ repositories {
 
 ext {
     kodeinVersion = "6.5.5"
-    slf4jVersion = "1.7.30"
+    slf4jVersion = "1.7.35"
 }
 
 dependencies {
@@ -37,7 +37,7 @@ dependencies {
     implementation "org.slf4j:slf4j-api:$slf4jVersion"
 
     // TESTING
-    testImplementation "org.junit.jupiter:junit-jupiter:5.6.1"
+    testImplementation "org.junit.jupiter:junit-jupiter:5.8.2"
     testImplementation "org.slf4j:slf4j-simple:$slf4jVersion"
 }
 
@@ -87,7 +87,7 @@ compileTestKotlin {
 //////////
 
 ktlint {
-    version = "0.36.0"
+    version = "0.43.2"
     verbose = true
 }
 
@@ -98,15 +98,15 @@ detekt {
 
 test {
     useJUnitPlatform {
-        excludeTags project.hasProperty("fast") ? "Slow" : "None"
+        excludeTags hasProperty("fast") ? "Slow" : "None"
     }
 }
 
 jacoco {
-    toolVersion = "0.8.4"
+    toolVersion = "0.8.7"
 }
 
-if (!project.hasProperty("fast")) test.finalizedBy(jacocoTestReport)
+if (!hasProperty("fast")) test.finalizedBy(jacocoTestReport)
 
 /////////////
 // PUBLISH //
@@ -145,10 +145,10 @@ publishing {
                     connection = 'scm:git:git://github.com/Koriit/kodein-application.git'
                     developerConnection = 'scm:git:ssh://github.com/Koriit/kodein-application.git'
                     url = 'https://github.com/Koriit/kodein-application'
+                }
             }
         }
     }
-}
 
     repositories {
         maven {

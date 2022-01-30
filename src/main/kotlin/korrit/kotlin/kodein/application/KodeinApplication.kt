@@ -1,14 +1,14 @@
 @file:Suppress("MatchingDeclarationName")
 package korrit.kotlin.kodein.application
 
-import java.lang.management.ManagementFactory
-import java.util.concurrent.CyclicBarrier
 import korrit.kotlin.kodein.application.ApplicationEvents.Start
 import korrit.kotlin.kodein.application.ApplicationEvents.Stop
 import org.kodein.di.Kodein
 import org.kodein.di.direct
 import org.kodein.di.generic.allInstances
 import org.slf4j.LoggerFactory
+import java.lang.management.ManagementFactory
+import java.util.concurrent.CyclicBarrier
 
 private val log = LoggerFactory.getLogger("koriit.kotlin.kodein.application.KodeinApplicationKt")
 
@@ -64,19 +64,21 @@ fun Kodein.run() {
 
         val finish = CyclicBarrier(2)
         val main = Thread.currentThread()
-        Runtime.getRuntime().addShutdownHook(Thread {
-            @Suppress("TooGenericExceptionCaught") // intended
-            try {
-                // Trigger cleanup callbacks like stopping server, etc.
-                dispatchEvent(Stop)
-            } catch (e: Throwable) {
-                log.error("Unexpected problem: ${e.message}", e)
-            } finally {
-                finish.await()
-                // Sometimes JVM might not wait for `main` to finish when receiving interrupt
-                main.join()
+        Runtime.getRuntime().addShutdownHook(
+            Thread {
+                @Suppress("TooGenericExceptionCaught") // intended
+                try {
+                    // Trigger cleanup callbacks like stopping server, etc.
+                    dispatchEvent(Stop)
+                } catch (e: Throwable) {
+                    log.error("Unexpected problem: ${e.message}", e)
+                } finally {
+                    finish.await()
+                    // Sometimes JVM might not wait for `main` to finish when receiving interrupt
+                    main.join()
+                }
             }
-        })
+        )
 
         log.info("Application startup finished: " + (ManagementFactory.getRuntimeMXBean().uptime / 1000.0) + "s")
 
