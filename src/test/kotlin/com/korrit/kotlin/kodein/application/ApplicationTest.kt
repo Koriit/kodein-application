@@ -1,4 +1,4 @@
-package korrit.kotlin.kodein.application
+package com.korrit.kotlin.kodein.application
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

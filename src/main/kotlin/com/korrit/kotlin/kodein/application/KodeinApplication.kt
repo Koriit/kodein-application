@@ -1,8 +1,8 @@
 @file:Suppress("MatchingDeclarationName")
-package korrit.kotlin.kodein.application
+package com.korrit.kotlin.kodein.application
 
-import korrit.kotlin.kodein.application.ApplicationEvents.Start
-import korrit.kotlin.kodein.application.ApplicationEvents.Stop
+import com.korrit.kotlin.kodein.application.ApplicationEvents.Start
+import com.korrit.kotlin.kodein.application.ApplicationEvents.Stop
 import org.kodein.di.Kodein
 import org.kodein.di.direct
 import org.kodein.di.generic.allInstances

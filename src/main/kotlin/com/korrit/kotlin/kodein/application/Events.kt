@@ -1,4 +1,4 @@
-package korrit.kotlin.kodein.application
+package com.korrit.kotlin.kodein.application
 
 import org.kodein.di.Kodein
 import org.kodein.di.direct
